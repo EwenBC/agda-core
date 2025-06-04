@@ -182,35 +182,56 @@ open Swap
 ---------------------------------------------------------------------------------------------------
                            {- PART TWO : Unification algorithm -}
 ---------------------------------------------------------------------------------------------------
-{-
 private variable
-  @0 α β : Scope Name
-  @0 x : Name
-  Γ : Context α
-  Ξ : TelescopicEq α β
+  @0 α    : Scope Name
+  @0 rβ   : RScope Name
+  @0 x    : Name
+  Γ       : Context α
+  Ξ       : TelescopicEq α rβ
 
-data UnificationFailure (Γ : Context α) (Ξ : TelescopicEq α β) : Set where
+data UnificationFailure (Γ : Context α) (Ξ : TelescopicEq α rβ) : Set where
   Stop : UnificationStops Γ Ξ → UnificationFailure Γ Ξ
   Error : String → UnificationFailure Γ Ξ
   Crash : String → UnificationFailure Γ Ξ
 
-UnificationResult : (Γ : Context α) (Ξ : TelescopicEq α β) → Set
+UnificationResult : (Γ : Context α) (Ξ : TelescopicEq α rβ) → Set
 UnificationResult Γ Ξ = Either
     (UnificationFailure Γ Ξ)
     (Σ0[ γ ∈ Scope Name ] ∃[ Γ' ∈ Context γ ] UnificationSteps Γ Ξ Γ' (⌈⌉ ≟ ⌈⌉ ∶ ⌈⌉))
 
-record UnificationValidStep (Γ : Context α) (Ξ : TelescopicEq α β) : Set where
+record UnificationValidStep (Γ : Context α) (Ξ : TelescopicEq α rβ) : Set where
   constructor UStep
   field
-    @0 α' : Scope Name
-    @0 β' : Scope Name
-    Γ' : Context α'
-    Ξ' : TelescopicEq α' β'
-    step : UnificationStep Γ Ξ Γ' Ξ'
+    @0 α'   : Scope Name
+    @0 rβ'  : RScope Name
+    Γ'      : Context α'
+    Ξ'      : TelescopicEq α' rβ'
+    step    : UnificationStep Γ Ξ Γ' Ξ'
 
-UnificationStepResult : (Γ : Context α) (Ξ : TelescopicEq α β) → Set
+UnificationStepResult : (Γ : Context α) (Ξ : TelescopicEq α rβ) → Set
 UnificationStepResult Γ Ξ = Either (UnificationFailure Γ Ξ) (UnificationValidStep Γ Ξ)
 
+
+unifierDeletion : ∀ (Γ : Context α)
+  (t : Term α) (δ₁ : TermS α rβ)
+  (t' : Term α) (δ₂ : TermS α rβ)
+  (Δ : Telescope α (x ◂ rβ))
+  (let e : TelescopicEq α (x ◂ rβ)
+       e = (x ↦ t ◂ δ₁ ≟ x ↦ t' ◂ δ₂ ∶ Δ))
+  → UnificationStepResult Γ e
+unifierDeletion Γ t δ₁ t' δ₂ Δ = {!   !}
+-- unifierDeletion _ _ = Left (Error "deletion step not valid")
+
+unifierVar : ∀ (Γ : Context α)
+  (n : NameIn α) (δ₁ : TermS α rβ)
+  (t : Term α) (δ₂ : TermS α rβ)
+  (Δ : Telescope α (x ◂ rβ))
+  (let e : TelescopicEq α (x ◂ rβ)
+       e = (x ↦ TVar n ◂ δ₁ ≟ x ↦ t ◂ δ₂ ∶ Δ))
+  → UnificationStepResult Γ e
+unifierVar Γ n δ₁ t δ₂ Δ = {!   !}
+
+{-
 opaque
   unfolding Scope
   unifDeletion : (Γ : Context α) (Ξ : TelescopicEq α β) → UnificationStepResult Γ Ξ

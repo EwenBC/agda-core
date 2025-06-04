@@ -435,5 +435,6 @@ module UnificationStepAndStop where
   infix 3 _,_↣ᵤ⋆⊥
   _,_↣ᵤ⋆_,_ = UnificationSteps
   _,_↣ᵤ⋆⊥ = UnificationStops
+
 {- End of module UnificationStepAndStop -}
 open UnificationStepAndStop public
