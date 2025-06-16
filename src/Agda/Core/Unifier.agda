@@ -9,6 +9,8 @@ open import Agda.Core.Syntax.Strengthening
 open import Agda.Core.Syntax.VarInTerm
 open import Agda.Core.TCM
 open import Agda.Core.TCMInstances
+open import Agda.Core.Conversion
+open import Agda.Core.Converter
 open import Agda.Core.Unification
 open UnificationStepAndStop
 open TelescopeEq
@@ -220,7 +222,13 @@ unifierDeletion : ∀ (Γ : Context α)
        e = (x ↦ t ◂ δ₁ ≟ x ↦ t' ◂ δ₂ ∶ Δ))
   → UnificationStepResult Γ e
 unifierDeletion Γ t δ₁ t' δ₂ Δ = {!   !}
--- unifierDeletion _ _ = Left (Error "deletion step not valid")
+--   convert (rezzScope Γ) t t'
+--   where aux : TCM (t ≅ t') → UnificationStepResult Γ _
+--         aux M
+--   case (convert (rezzScope Γ) t t') of
+--     runTCM _ (Right t≅t') → ?
+--     _ → ?
+-- -- unifierDeletion _ _ = Left (Error "deletion step not valid")
 
 unifierVar : ∀ (Γ : Context α)
   (n : NameIn α) (δ₁ : TermS α rβ)

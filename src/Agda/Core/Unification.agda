@@ -7,6 +7,7 @@ open import Agda.Core.Name
 open import Agda.Core.Utils
 open import Agda.Core.Syntax
 open import Agda.Core.Syntax.Strengthening
+open import Agda.Core.Conversion
 
 module Agda.Core.Unification
     {{@0 globals : Globals}}
@@ -225,12 +226,13 @@ module UnificationStepAndStop where
 
     {- remove equalities of the form t = t -}
     Deletion :
-      {t : Term α}
+      {t₁ t₂ : Term α}
       {Ξ : Telescope α (e₀ ◂ rβ)}
       (let Δ : Telescope α rβ
-           Δ = telescopeDrop (rezz α) Ξ t)                             -- replace e₀ by t in the telescope
+           Δ = telescopeDrop (rezz α) Ξ t₁)                             -- replace e₀ by t in the telescope
+      → t₁ ≅ t₂
       ------------------------------------------------------------
-      → Γ , (e₀ ↦ t ◂ δ₁) ≟ (e₀ ↦ t ◂ δ₂) ∶ Ξ ↣ᵤ Γ , δ₁ ≟ δ₂ ∶ Δ
+      → Γ , (e₀ ↦ t₁ ◂ δ₁) ≟ (e₀ ↦ t₂ ◂ δ₂) ∶ Ξ ↣ᵤ Γ , δ₁ ≟ δ₂ ∶ Δ
 
     {- solve equalities of the form x = u when x is a variable -}
     SolutionL :
